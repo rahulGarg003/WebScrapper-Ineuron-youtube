@@ -108,6 +108,8 @@ class CoursePDF():
                 pdf.cell(w=100, h=ch, txt=self.__formatText(value), ln=1)
         # pdf.ln(4)
 
+        if(not os.path.exists('./pdfs')):
+            os.mkdir('./pdfs')
         pdf.output(f'./pdfs/{data.get("title","testpdf").replace(" ","-")}.pdf', 'F')
 
 if __name__ == '__main__':

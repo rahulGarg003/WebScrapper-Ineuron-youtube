@@ -36,14 +36,14 @@ class ScrapIneuron():
             url = f"https://www.ineuron.ai/course/{courseTitle.replace(' ', '-')}"
             rawdata = bs(requests.get(url).content, 'html.parser')
             data = json.loads(rawdata.find_all('script', id = '__NEXT_DATA__')[0].text)
-            course = data.get('props',{}).get('pageProps',{}).get('data',{})
+            courseData = data.get('props',{}).get('pageProps',{}).get('data',{})
             instructors = data.get('props',{}).get('pageProps',{}).get('initialState',{}).get('init',{}).get('instructors',{})
-            courseInstructor = course.get('meta',{}).get('instructors',{})
+            courseInstructor = courseData.get('meta',{}).get('instructors',{})
             courseInstructorDetails = {}
             for instruc in courseInstructor:
                 courseInstructorDetails[instruc] = instructors.get(instruc,{})
-            course['meta']['instructordetails'] = courseInstructorDetails
-            return course
+            courseData['meta']['instructordetails'] = courseInstructorDetails
+            return courseData
         except Exception as e:
             raise Exception('Something went worng with Ineuron Website!!!')
 
