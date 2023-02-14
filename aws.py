@@ -11,24 +11,30 @@ class AWS():
                 config = json.loads(f.read())
                 f.close()
             self.__s3 = boto3.resource(
-            service_name = 's3',
-            region_name = config.get('AWS_S3_REGION_NAME'),
-            aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+                service_name = 's3',
+                region_name = config.get('AWS_S3_REGION_NAME'),
+                aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
             )
             self.__bucketName = config.get('AWS_S3_BUCKET_NAME')
         except Exception as err:
-            print('Please provide config file to proceed')
+            print(err)
             
-    def uploadToS3(self, filePath: str):
-        if(os.path.exists(filePath)):
+    def uploadToS3(self, filePath = '', pdfString = '', isSavedPdf = True):
+        if(isSavedPdf):
+            if(os.path.exists(filePath)):
+                try:
+                    self.__s3.Bucket(self.__bucketName).upload_file(Filename = filePath, Key = os.path.basename(filePath))
+                    print(os.path.basename(filePath), 'uploaded')
+                except Exception as e:
+                    print(e)
+            else:
+                print('No such file exists')
+        else:
             try:
-                self.__s3.Bucket(self.__bucketName).upload_file(Filename = filePath, Key = os.path.basename(filePath))
-                print(os.path.basename(filePath), 'uploaded')
+                self.__s3.Bucket(self.__bucketName).put_object(Key = f'{filePath.replace(" ","-")}.pdf', Body = pdfString)
             except Exception as e:
                 print(e)
-        else:
-            print('No such file exists')
 
     def downloadFromS3(self, fileName: str):
         try:

@@ -1,4 +1,6 @@
 {
     "AWS_S3_REGION_NAME" : "ap-south-1",
-    "AWS_S3_BUCKET_NAME" : "ineuron-courses-pdfs"
+    "AWS_S3_BUCKET_NAME" : "ineuron-courses-pdfs",
+    "MYSQL_DB_NAME" : "ineuron_scrap",
+    "MONGO_DB_NAME" : "ineuron_scrap"
 }

@@ -27,7 +27,7 @@ class CoursePDF():
     def __formatText(self, txt):
         return str(txt).encode('latin-1', 'replace').decode('latin-1')
 
-    def generateCoursePdf(self,data: dict):
+    def generateCoursePdf(self,data: dict, savePdf=True):
         # cell height
         ch = 6
         pdf = self._PDF()
@@ -80,7 +80,6 @@ class CoursePDF():
         # pdf.set_x(210*2/3)
         pdf.cell(w=0, h=ch, txt=f"{' '*4}{self.__formatText(data.get('details',{}).get('pricing',{}).get('US',''))} USD", ln=1)
         pdf.ln(2)
-        # pdf.set_y(y_pos+(15*ch))
         pdf.set_font('Arial', 'B', 10)
         pdf.cell(w=30, h=ch, txt="Course Curriculum:", ln=1)
         pdf.set_font('Arial', '', 9)
@@ -94,7 +93,6 @@ class CoursePDF():
 
         pdf.set_font('Arial', 'B', 10)
         pdf.cell(w=30, h=ch, txt="Instructors:", ln=1)
-        # pdf.set_font('Arial', '', 12)
         for num, d in enumerate(data.get('meta',{}).get('instructordetails',{}).values()):
             pdf.set_font('Arial', 'B', 10)
             pdf.cell(w=0, h=ch, txt='{}. {}'.format(num+1, self.__formatText(d.get('name',''))), ln=1)
@@ -108,9 +106,13 @@ class CoursePDF():
                 pdf.cell(w=100, h=ch, txt=self.__formatText(value), ln=1)
         # pdf.ln(4)
 
-        if(not os.path.exists('./pdfs')):
-            os.mkdir('./pdfs')
-        pdf.output(f'./pdfs/{data.get("title","testpdf").replace(" ","-")}.pdf', 'F')
+        if(savePdf):
+            if(not os.path.exists('./pdfs')):
+                os.mkdir('./pdfs')
+            pdf.output(f'./pdfs/{data.get("title","testpdf").replace(" ","-")}.pdf', 'F')
+            return f'Pdf has been saved at ./pdfs/{data.get("title","testpdf").replace(" ","-")}.pdf'
+        else:
+            return pdf.output(f'{data.get("title","testpdf").replace(" ","-")}.pdf', 'S').encode('latin-1')
 
 if __name__ == '__main__':
     CoursePDF().generateCoursePdf()
